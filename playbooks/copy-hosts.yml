@@ -1,0 +1,11 @@
+---
+- name: Crear directorios y mover archivos a la ruta de la pagina
+  hosts: webservers
+  become: yes
+
+  tasks:
+    - name: Copiar archivo hosts
+      copy:
+        src: "~/ansible/files/hosts"
+        dest: "/etc/"
+        mode: 0600

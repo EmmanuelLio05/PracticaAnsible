@@ -1,0 +1,26 @@
+---
+- name: Crear directorios y mover archivos a la ruta de la pagina
+  hosts: webservers
+  become: yes
+  vars_files:
+    variables.yml
+
+  tasks:
+    - name: Crear carpeta raiz
+      file:
+        path: "/var/www/{{ http_host }}/app"
+        state: directory
+        mode: '0755'
+
+    - name: Copiar archivos hacia la carpeta raiz
+      copy:
+        src: "{{ item }}"
+        dest: "/var/www/{{ http_host }}/app/"
+        mode: 0600
+      with_fileglob:
+        - "/home/emilio/files/pagina/*.php"
+
+    - name: Copiar archivo conf
+      template:
+        src: "/home/emilio/files/EHernandez-web-app.conf"
+        dest: "/etc/apache2/sites-available/EHernandez-app.conf"

@@ -1,0 +1,30 @@
+---
+- hosts: webservers
+  become: true
+  tasks:
+  - name: install apache2
+    apt: name=apache2 update_cache=yes state=latest
+
+  - name: install mySql
+    apt: name=mysql-server update_cache=yes state=latest
+
+  - name: install php
+    apt: name=php update_cache=yes state=latest
+
+  - name: install libapache2-mod-php
+    apt: name=libapache2-mod-php update_cache=yes state=latest
+
+  - name: install php-mysql
+    apt: name=php-mysql update_cache=yes state=latest
+
+  - name: install pip
+    apt:
+      name: python3-pip
+      update_cache: yes
+      state: present
+
+  - name: install pymysql
+    pip:
+      name: pymysql
+      state: present
+

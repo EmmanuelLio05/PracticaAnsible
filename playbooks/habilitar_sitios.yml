@@ -1,0 +1,32 @@
+---
+- name: habilitar sitios web
+  become: yes
+  hosts: webservers
+  vars_files:
+    variables.yml
+
+  tasks:
+    - name: habilitar web
+      command: a2ensite 0EHernandez-web.conf
+
+    - name: habilitar aplicacion
+      command: a2ensite EHernandez-web-app.conf
+
+    - name: habilitar puerto "{{ hrrp_port }}"
+      ufw:
+        rule: allow
+        port: "{{ http_port }}"
+        proto: tcp
+
+    - name: bajar sitio default
+      command: a2dissite 000-default.conf
+
+    - name: recargar apache
+      service:
+        name: apache2
+        state: reloaded
+
+    - name: reiniciar apache
+      service:
+        name: apache2
+        state: started

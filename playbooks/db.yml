@@ -1,0 +1,32 @@
+---
+- hosts: webservers
+  become: yes
+  tasks:
+  - name: actualizar usuario root sql
+    mysql_user:
+      name: root
+      host: "localhost"
+      password: "1234"
+      login_unix_socket: /var/run/mysqld/mysqld.sock
+      check_implicit_admin: yes
+      priv: "*.*:ALL,GRANT"
+
+  - name: Eliminar usuarios anonimos
+    mysql_user:
+      name: ''
+      host: localhost
+      state: absent
+
+  - name: crear base de datos
+    mysql_db:
+      name: "demo"
+      login_user: "root"
+      login_password: "1234"
+
+  - name: copiar consulta para crear tabla
+    copy:
+      src: "~/home/emilio/files/pagina/tabla.sql"
+      dest: "/tmp/tabla.sql"
+
+  - name: ejecutar consulta
+    mysql_db: name=demo state=import target=/tmp/tabla.sql login_user=root login_password="1234"
